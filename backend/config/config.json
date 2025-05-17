@@ -1,0 +1,9 @@
+{
+  "development": {
+    "username": "school_user",
+    "password": "school_pass",
+    "database": "school_vaccine_db",
+    "host": "localhost",
+    "dialect": "postgres"
+  }
+}
