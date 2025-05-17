@@ -40,7 +40,3 @@ This project is a full-stack application development project to manage vaccinati
 5. Application login:
     email = 'admin@school.com'
     password = 'admin123'
-
-## License
-Sinchana Chandrashekar
-2024TM93227
