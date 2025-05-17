@@ -1,0 +1,788 @@
+openapi: 3.0.0
+info:
+  title: School Vaccination Portal API
+  description: API documentation for the School Vaccination Portal backend.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+paths:
+ /api/dashboard/summary:
+    get:
+      summary: Fetch dashboard summary
+      description: Retrieve a summary of the dashboard, including total students, vaccinated students, vaccination rate, and upcoming vaccination drives.
+      tags:
+        - Dashboard
+      responses:
+        '200':
+          description: Successful response with dashboard summary data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalStudents:
+                    type: integer
+                    description: Total number of students.
+                    example: 500
+                  vaccinatedStudents:
+                    type: integer
+                    description: Number of vaccinated students.
+                    example: 350
+                  vaccinationRate:
+                    type: integer
+                    description: Vaccination rate as a percentage.
+                    example: 70
+                  upcomingDrives:
+                    type: array
+                    description: List of upcoming vaccination drives.
+                    items:
+                      type: object
+                      properties:
+                        drive_id:
+                          type: integer
+                          description: ID of the vaccination drive.
+                          example: 1
+                        drive_title:
+                          type: string
+                          description: Title of the vaccination drive.
+                          example: "Polio Vaccination Drive"
+                        drive_date:
+                          type: string
+                          format: date
+                          description: Date of the vaccination drive.
+                          example: "2025-05-15"
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message.
+                    example: "Failed to retrieve dashboard summary. Please try again later."
+ /api/report/student-vaccination-report:
+    get:
+      summary: Fetch detailed vaccination report
+      description: Retrieve a detailed vaccination report with optional filters for student name, vaccine name, class, and drive date.
+      tags:
+        - Reports
+      parameters:
+        - name: student_name
+          in: query
+          description: Filter by student name (case-insensitive).
+          required: false
+          schema:
+            type: string
+            example: "John"
+        - name: vaccine_name
+          in: query
+          description: Filter by vaccine name (case-insensitive).
+          required: false
+          schema:
+            type: string
+            example: "Polio"
+        - name: classname
+          in: query
+          description: Filter by class name (case-insensitive).
+          required: false
+          schema:
+            type: string
+            example: "Grade 5"
+        - name: drive_date
+          in: query
+          description: Filter by vaccination drive date (YYYY-MM-DD).
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2025-05-15"
+      responses:
+        '200':
+          description: Successful response with vaccination report data.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    student_name:
+                      type: string
+                      description: Name of the student.
+                      example: "John Doe"
+                    vaccination_status:
+                      type: string
+                      description: Vaccination status of the student.
+                      example: "Vaccinated"
+                    student_class:
+                      type: string
+                      description: Class of the student.
+                      example: "Grade 5"
+                    date_of_birth:
+                      type: string
+                      format: date
+                      description: Date of birth of the student.
+                      example: "2010-05-10"
+                    vaccination_drive_title:
+                      type: string
+                      description: Title of the vaccination drive.
+                      example: "Polio Vaccination Drive"
+                    vaccination_date:
+                      type: string
+                      format: date
+                      description: Date of the vaccination drive.
+                      example: "2025-05-15"
+                    vaccine_name:
+                      type: string
+                      description: Name of the vaccine.
+                      example: "Polio"
+                    vaccine_quantity:
+                      type: integer
+                      description: Quantity of vaccines available.
+                      example: 100
+                    drive_class:
+                      type: string
+                      description: Target class for the vaccination drive.
+                      example: "Grade 5"
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message.
+                    example: "Failed to retrieve vaccination report. Please try again later."
+
+ /api/report/vaccination-drives:
+    get:
+      summary: Fetch vaccination drives
+      description: Retrieve a list of vaccination drives.
+      tags:
+        - Reports
+      responses:
+        '200':
+          description: Successful response with vaccination drives data.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    drive_title:
+                      type: string
+                      description: Title of the vaccination drive.
+                      example: "Polio Vaccination Drive"
+                    vaccination_date:
+                      type: string
+                      format: date
+                      description: Date of the vaccination drive.
+                      example: "2025-05-15"
+                    vaccine_name:
+                      type: string
+                      description: Name of the vaccine.
+                      example: "Polio"
+                    vaccine_quantity:
+                      type: integer
+                      description: Quantity of vaccines available.
+                      example: 100
+                    drive_class:
+                      type: string
+                      description: Target class for the vaccination drive.
+                      example: "Grade 5"
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message.
+                    example: "Failed to retrieve vaccination drives. Please try again later."
+
+ /api/report/students:
+    get:
+      summary: Fetch students with vaccination status
+      description: Retrieve a list of students along with their vaccination status.
+      tags:
+        - Reports
+      responses:
+        '200':
+          description: Successful response with student data.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    student_name:
+                      type: string
+                      description: Name of the student.
+                      example: "John Doe"
+                    vaccination_status:
+                      type: string
+                      description: Vaccination status of the student.
+                      example: "Vaccinated"
+                    student_class:
+                      type: string
+                      description: Class of the student.
+                      example: "Grade 5"
+                    date_of_birth:
+                      type: string
+                      format: date
+                      description: Date of birth of the student.
+                      example: "2010-05-10"
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message.
+                    example: "Failed to retrieve student list. Please try again later."
+ 
+/api/students:
+    get:
+      summary: Fetch all students with vaccination details
+      description: Retrieve a list of all students along with their vaccination details.
+      tags:
+        - Students
+      responses:
+        '200':
+          description: Successful response with student data.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: Student ID.
+                      example: 1
+                    name:
+                      type: string
+                      description: Name of the student.
+                      example: "John Doe"
+                    classname:
+                      type: string
+                      description: Class of the student.
+                      example: "Grade 5"
+                    dob:
+                      type: string
+                      format: date
+                      description: Date of birth of the student.
+                      example: "2010-05-10"
+                    vaccination_status:
+                      type: string
+                      description: Vaccination status of the student.
+                      example: "Vaccinated"
+                    vaccinations:
+                      type: array
+                      description: List of vaccination drives the student participated in.
+                      items:
+                        type: object
+                        properties:
+                          driveId:
+                            type: integer
+                            description: ID of the vaccination drive.
+                            example: 1
+                          title:
+                            type: string
+                            description: Title of the vaccination drive.
+                            example: "Polio Vaccination Drive"
+                          vaccineName:
+                            type: string
+                            description: Name of the vaccine.
+                            example: "Polio"
+                          date:
+                            type: string
+                            format: date
+                            description: Date of the vaccination drive.
+                            example: "2025-05-15"
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message.
+                    example: "Failed to fetch students"
+
+    post:
+      summary: Add a new student
+      description: Add a new student to the database.
+      tags:
+        - Students
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the student.
+                  example: "John Doe"
+                classname:
+                  type: string
+                  description: Class of the student.
+                  example: "Grade 5"
+                dob:
+                  type: string
+                  format: date
+                  description: Date of birth of the student (yyyy-mm-dd).
+                  example: "2010-05-10"
+      responses:
+        '201':
+          description: Student added successfully.
+        '400':
+          description: Invalid input.
+        '500':
+          description: Internal server error.
+/api/students/{id}:
+    put:
+      summary: Update student details
+      description: Update the details of an existing student.
+      tags:
+        - Students
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the student to update.
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the student.
+                  example: "John Doe"
+                classname:
+                  type: string
+                  description: Class of the student.
+                  example: "Grade 5"
+                dob:
+                  type: string
+                  format: date
+                  description: Date of birth of the student (yyyy-mm-dd).
+                  example: "2010-05-10"
+      responses:
+        '200':
+          description: Student updated successfully.
+        '400':
+          description: Invalid input.
+        '500':
+          description: Internal server error.
+/api/students/bulk:
+    post:
+      summary: Bulk import students
+      description: Add multiple students to the database in bulk.
+      tags:
+        - Students
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Name of the student.
+                    example: "John Doe"
+                  classname:
+                    type: string
+                    description: Class of the student.
+                    example: "Grade 5"
+                  dob:
+                    type: string
+                    format: date
+                    description: Date of birth of the student (yyyy-mm-dd).
+                    example: "2010-05-10"
+      responses:
+        '200':
+          description: Bulk import completed with details of added and skipped records.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  added:
+                    type: integer
+                    description: Number of students added.
+                    example: 10
+                  skipped:
+                    type: integer
+                    description: Number of students skipped due to errors or duplicates.
+                    example: 2
+        '500':
+          description: Internal server error.
+/api/students/{id}/vaccinate:
+    post:
+      summary: Record student vaccination
+      description: Record a vaccination for a specific student.
+      tags:
+        - Students
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the student to vaccinate.
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                vaccinationDriveId:
+                  type: integer
+                  description: ID of the vaccination drive.
+                  example: 1
+      responses:
+        '201':
+          description: Vaccination recorded successfully.
+        '400':
+          description: Invalid input or student already vaccinated in this drive.
+        '500':
+          description: Internal server error.
+/api/students/vaccination-status/{id}:
+    put:
+      summary: Update vaccination status
+      description: Update the vaccination status of a specific student.
+      tags:
+        - Students
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the student to update.
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                vaccinationStatus:
+                  type: string
+                  description: New vaccination status.
+                  example: "Vaccinated"
+      responses:
+        '200':
+          description: Vaccination status updated successfully.
+        '400':
+          description: Invalid input.
+        '500':
+          description: Internal server error.
+    /api/vaccination-drives:
+    get:
+      summary: Fetch all vaccination drives
+      description: Retrieve a list of all vaccination drives, ordered by drive date.
+      tags:
+        - Vaccination Drives
+      responses:
+        '200':
+          description: Successful response with vaccination drives data.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: ID of the vaccination drive.
+                      example: 1
+                    title:
+                      type: string
+                      description: Title of the vaccination drive.
+                      example: "Polio Vaccination Drive"
+                    vaccine_name:
+                      type: string
+                      description: Name of the vaccine.
+                      example: "Polio"
+                    drive_date:
+                      type: string
+                      format: date
+                      description: Date of the vaccination drive.
+                      example: "2025-05-15"
+                    no_of_vaccine:
+                      type: integer
+                      description: Number of vaccines available.
+                      example: 100
+                    classname:
+                      type: string
+                      description: Target class for the vaccination drive.
+                      example: "Grade 5"
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message.
+                    example: "Unable to fetch vaccination drives. Please try again later."
+
+    post:
+      summary: Create a new vaccination drive
+      description: Add a new vaccination drive to the database.
+      tags:
+        - Vaccination Drives
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Title of the vaccination drive.
+                  example: "Polio Vaccination Drive"
+                vaccine_name:
+                  type: string
+                  description: Name of the vaccine.
+                  example: "Polio"
+                drive_date:
+                  type: string
+                  format: date
+                  description: Date of the vaccination drive (yyyy-mm-dd).
+                  example: "2025-05-15"
+                no_of_vaccine:
+                  type: integer
+                  description: Number of vaccines available.
+                  example: 100
+                classname:
+                  type: string
+                  description: Target class for the vaccination drive.
+                  example: "Grade 5"
+      responses:
+        '201':
+          description: Vaccination drive created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: ID of the vaccination drive.
+                    example: 1
+                  title:
+                    type: string
+                    description: Title of the vaccination drive.
+                    example: "Polio Vaccination Drive"
+                  vaccine_name:
+                    type: string
+                    description: Name of the vaccine.
+                    example: "Polio"
+                  drive_date:
+                    type: string
+                    format: date
+                    description: Date of the vaccination drive.
+                    example: "2025-05-15"
+                  no_of_vaccine:
+                    type: integer
+                    description: Number of vaccines available.
+                    example: 100
+                  classname:
+                    type: string
+                    description: Target class for the vaccination drive.
+                    example: "Grade 5"
+        '400':
+          description: A vaccination drive is already scheduled for the given date.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message.
+                    example: "A vaccination drive is already scheduled for this date. Please choose a different date."
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message.
+                    example: "Unable to create vaccination drive. Please try again later."
+/api/vaccination-drives/{id}:
+    put:
+      summary: Update an existing vaccination drive
+      description: Update the details of an existing vaccination drive.
+      tags:
+        - Vaccination Drives
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the vaccination drive to update.
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Title of the vaccination drive.
+                  example: "Updated Polio Vaccination Drive"
+                vaccine_name:
+                  type: string
+                  description: Name of the vaccine.
+                  example: "Polio"
+                drive_date:
+                  type: string
+                  format: date
+                  description: Date of the vaccination drive (yyyy-mm-dd).
+                  example: "2025-05-20"
+                no_of_vaccine:
+                  type: integer
+                  description: Number of vaccines available.
+                  example: 150
+                classname:
+                  type: string
+                  description: Target class for the vaccination drive.
+                  example: "Grade 6"
+      responses:
+        '200':
+          description: Vaccination drive updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: ID of the vaccination drive.
+                    example: 1
+                  title:
+                    type: string
+                    description: Title of the vaccination drive.
+                    example: "Updated Polio Vaccination Drive"
+                  vaccine_name:
+                    type: string
+                    description: Name of the vaccine.
+                    example: "Polio"
+                  drive_date:
+                    type: string
+                    format: date
+                    description: Date of the vaccination drive.
+                    example: "2025-05-20"
+                  no_of_vaccine:
+                    type: integer
+                    description: Number of vaccines available.
+                    example: 150
+                  classname:
+                    type: string
+                    description: Target class for the vaccination drive.
+                    example: "Grade 6"
+        '404':
+          description: Vaccination drive not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message.
+                    example: "Vaccination drive not found. Please check the ID and try again."
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message.
+                    example: "Unable to update vaccination drive. Please try again later."
+
+/api/vaccines:
+    get:
+      summary: Fetch all unique vaccines
+      description: Retrieve a list of all unique vaccines from vaccination drives.
+      tags:
+        - Vaccines
+      responses:
+        '200':
+          description: Successful response with vaccine data.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    drive_id:
+                      type: integer
+                      description: ID of the vaccination drive.
+                      example: 1
+                    drive_title:
+                      type: string
+                      description: Title of the vaccination drive.
+                      example: "Polio Vaccination Drive"
+                    vaccine_type:
+                      type: string
+                      description: Name of the vaccine.
+                      example: "Polio"
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message.
+                    example: "Unable to fetch vaccine data. Please try again later."
